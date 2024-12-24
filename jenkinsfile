@@ -32,12 +32,20 @@ pipeline {
  }
  }
  }
- post {
- success {
- echo 'Pipeline finished successfully!'
- }
- failure {
- echo 'Pipeline failed!'
- }
- }
+ post { 
+        success { 
+            emailext (
+                subject: 'Build Succeeded', 
+                body: 'The build succeeded!', 
+                to: 'syavirasatriani23@gmail.com'
+            )
+        } 
+        failure { 
+            emailext (
+                subject: 'Build Failed',
+                body: 'The build failed.', 
+                to: 'syavirasatriani23@gmail.com'
+            )
+        } 
+    }
 }
