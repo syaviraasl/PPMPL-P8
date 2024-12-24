@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:unit" : "jest --testPathPattern=app.test.js",
+    "test:integration": "jest --testPathPattern=app.integration.test.js"
   },
   "keywords": [],
   "author": "",

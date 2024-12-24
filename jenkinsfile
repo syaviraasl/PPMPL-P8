@@ -1,38 +1,54 @@
 pipeline {
- agent any
- environment {
- CI = 'true'
- }
- stages {
- stage('Checkout') {
- steps {
- git branch: 'main', url: 'https://github.com/syaviraasl/PPMPL-P8'
- }
- }
- stage('Install Dependencies') {
- steps {
- sh 'npm install'
- }
- }
- stage('Run Unit Tests') {
- steps {
- sh 'npm test'
- }
- }
- stage('Build') {
- steps {
- echo 'Building the application...'
- // Tambahkan perintah build jika diperlukan
- }
- }
- stage('Deploy') {
- steps {
- echo 'Deploying the application...'
- // Tambahkan perintah deploy jika diperlukan
- }
- }
- }
- post { 
+    agent any
+    environment { CI = 'true' }
+    stages {
+        stage('Debug Context') {
+            steps {
+                script {
+                    def branch = env.BRANCH_NAME ?: env.GIT_BRANCH
+                    echo "Current Branch Name: ${branch}"
+                }
+            }
+        }
+        stage('Checkout') {
+            steps {
+                script {
+                    def branch = env.BRANCH_NAME ?: env.GIT_BRANCH
+                    if (branch == 'main') {
+                        git branch: 'main', url: 'https://github.com/syaviraasl/PPMPL-P8'
+                    } else if (branch == 'develop') {
+                        git branch: 'develop', url: 'https://github.com/syaviraasl/PPMPL-P8'
+                    }
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Run Unit Tests') {
+            steps {
+                sh 'npm run test:unit'
+            }
+        }
+        stage('Run Integration Tests') {
+            steps {
+                sh 'npm run test:integration'
+            }
+        }
+        stage('Build') {
+            steps {
+            echo 'Building the application...'
+            }
+        }
+        stage('Deploy to Production') {
+            steps {
+                echo 'Simulating deployment to production...'
+            }
+        }
+    }
+    post { 
         success { 
             emailext (
                 subject: 'Build Succeeded', 
